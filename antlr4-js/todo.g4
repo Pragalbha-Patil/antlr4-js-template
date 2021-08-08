@@ -5,7 +5,7 @@ elements
     ;
 
 element
-    : '*' ( ' ' | '\t' )* CONTENT NL+
+    : '#' ( ' ' | '\t' )* CONTENT NL+
     ;
 
 emptyLine
