@@ -8,8 +8,7 @@
 <body>
 <div id="inputs">
 <textarea id="code">
-* play with antlr4
-* write a tutorial
+{}
 </textarea>
 <br/>
 <button id="parse">Parse</button>
@@ -24,11 +23,16 @@ var updateTree = function(tree, ruleNames) {
 
     for (var i = 0; i < tree.children.length; i++) {
         var child = tree.children[i];
+        console.log(child);
+        // debugger;
         var nodeType = ruleNames[child.ruleIndex];
-        if (nodeType == "element") {
+        if (nodeType == "value") {
+            console.log("here")
             var newElement = document.createElement("div");
             newElement.className = "todoElement";
-            var newElementText = document.createTextNode(child.children[2].getText());
+            // debugger;
+            // var newElementText = document.createTextNode(child.children[2].getText());
+            var newElementText = document.createTextNode(child.children[0].children[1].children[2].children[0].getText());
             newElement.appendChild(newElementText);
             container.appendChild(newElement);
         }
@@ -36,17 +40,18 @@ var updateTree = function(tree, ruleNames) {
 };
 
 var antlr4 = require('antlr4/index');
-var TodoLexer = require('generated-parser/todoLexer');
-var TodoParser = require('generated-parser/todoParser');
+var TodoLexer = require('generated-parser/JSONLexer');
+var TodoParser = require('generated-parser/JSONParser');
 document.getElementById("parse").addEventListener("click", function(){
     var input = document.getElementById("code").value;
     var chars = new antlr4.InputStream(input);
-    var lexer = new TodoLexer.todoLexer(chars);
+    var lexer = new TodoLexer.JSONLexer(chars);
     var tokens  = new antlr4.CommonTokenStream(lexer);
-    var parser = new TodoParser.todoParser(tokens);
+    var parser = new TodoParser.JSONParser(tokens);
     parser.buildParseTrees = true;
-    var tree = parser.elements();
+    var tree = parser.json();
     console.log("Parsed: "+ tree);
+    console.log("Rules: "+ parser.ruleNames);
     updateTree(tree, parser.ruleNames);
 });
 </script>
